@@ -115,7 +115,7 @@ void draw() {
     if (inByte < 100) { // If user stands <=1m away from sensor for long enough, play full description 
       hasLeft = 0;
       adTrigCount++;
-      if ((adTrigCount >= 10) && (pause == 0) ){
+      if ((adTrigCount >= 5) && (pause == 0) ){
         player_ad.setGain(20); 
         player_ad.play(); 
       }
