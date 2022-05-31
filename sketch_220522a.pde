@@ -10,6 +10,11 @@ float oldGain = 0;
 float oldGainAd = 0; 
 int adTrigCount = 0;
 int playPrev = 1;
+int adTrigWait = 50;
+float timeAway = 0;
+int hasLeft = 0;
+float startTime = 0;
+int pause = 0;
 
  
 void setup()
@@ -52,6 +57,7 @@ void draw() {
       player_ad.pause();
       player_ad.rewind();
       adTrigCount = 0;
+      adTrigWait = 0;
     }
     //set preview back to beginning once it has finished
     if (player_pr.position() == player_pr.length()){
@@ -62,11 +68,42 @@ void draw() {
     if (player.position() == player.length()){
       player.rewind();
     }
+    
     float inByte = myPort.read();
+    String manControl = myPort.readString(); 
+    
+    println(manControl); 
+    //float manControl = myPort.read();
     //allow preview to be triggered again if user has gotten more than 170cm since the last time it played
     if ((playPrev == 0) && (inByte > 170)){
       playPrev = 1;
     }
+    
+    if (!player_ad.isPlaying()){
+      println("got to not playing part"); 
+      if (manControl != null && manControl.equals("play")){
+        player_ad.play();
+        pause = 0;
+      }
+    }
+    
+    if (player_ad.isPlaying()){
+      //if hasLeft is 0 and they are far away, switch hasLeft to 1 and start timer 
+      println("got to playing part"); 
+      if (manControl != null && manControl.equals("pause")) {
+        pause = 1;
+        player_ad.pause();
+      }
+      if ((hasLeft == 0) && (inByte > 170)){
+        hasLeft = 1;
+        startTime = millis();
+      } 
+      if ((millis() - startTime) >= 5000) {
+        player_ad.pause();
+      }
+    }
+
+    
     float vol = chooseVolume(inByte);
     //float volAd = chooseVolumeAd(inByte); 
     println(inByte);
@@ -76,21 +113,19 @@ void draw() {
     //play preview if user is btwn 1.2 & 1.4m away
     //playPrev ensures preview can't be re-triggered until person gets over 170cm away and then comes back
     //also, can't play if full description is also playing
-    if ((inByte > 120) && (inByte < 140) && (playPrev == 1) && (!player_ad.isPlaying())){
+    if ((inByte > 120) && (inByte < 140) && (playPrev == 1) && (!player_ad.isPlaying()) && (pause == 0)){
       playPrev = 0;
       player_pr.play();
     }
     if (inByte < 100) { // If user stands <=1m away from sensor for long enough, play full description 
+      hasLeft = 0;
       adTrigCount ++;
-      if (adTrigCount >= 10){
+      adTrigWait++;
+      if ((adTrigCount >= 10) && (adTrigWait >= 50) && (pause == 0) ){
         player_ad.setGain(20); 
         player_ad.play(); 
       }
     }
 
-    //} else {
-    //  //player_ad.shiftGain(oldGainAd, volAd, 1000);
-    //  player_ad.pause();
-    //}
   }
 }
