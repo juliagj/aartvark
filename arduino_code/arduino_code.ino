@@ -40,11 +40,13 @@ void loop() {
   boolean buttonState = digitalRead(buttonPin); 
    if (buttonState == LOW && buttonFlag == false) // LOW means button is pressed
    {
-      Serial.write("play"); 
+      Serial.write("e"); 
+      delay(250);
       buttonFlag = true;
    } else if (buttonState == LOW && buttonFlag == true) 
    {
-      Serial.write("pause"); 
+      Serial.write("y"); 
+      delay(250);
       buttonFlag = false;
    }
   delay(250);

@@ -19,7 +19,7 @@ int pause = 0;
 void setup()
 {
   // change next line based on your USB port name
-  myPort = new Serial(this, "/dev/cu.usbmodem146101", 9600);
+  myPort = new Serial(this, "/dev/cu.usbmodem145101", 9600);
   minim = new Minim(this);
   player = minim.loadFile("../ringgold1_music5.mp3");
   player_ad = minim.loadFile("../Ringgold1_desc.wav"); 
@@ -75,7 +75,7 @@ void draw() {
     
     if (!player_ad.isPlaying()){
       println("got to not playing part"); 
-      if (manControl != null && manControl.equals("play")){
+      if (manControl != null && manControl.equals("y")){
         player_ad.play();
         pause = 0;
       }
@@ -84,7 +84,7 @@ void draw() {
     if (player_ad.isPlaying()){
       //if hasLeft is 0 and they are far away, switch hasLeft to 1 and start timer 
       println("got to playing part"); 
-      if (manControl != null && manControl.equals("pause")) {
+      if (manControl != null && manControl.equals("e")) {
         pause = 1;
         player_ad.pause();
       }
