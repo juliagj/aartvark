@@ -24,7 +24,7 @@ void setup()
   minim = new Minim(this);
   player = minim.loadFile("../ringgold1_music5.mp3");
   player_ad = minim.loadFile("../Ringgold1_desc.wav"); 
-  player_pr = minim.loadFile("../Ringgold1_preview.wav"); 
+  player_pr = minim.loadFile("../ringgold1_preview.wav"); 
 }
 
 //I'm doing this in percent, but it may need to be in decibels; if not audible, try multiplying volume by 100
