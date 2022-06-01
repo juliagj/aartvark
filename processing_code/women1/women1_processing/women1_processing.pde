@@ -95,7 +95,7 @@ void draw() {
         adTrigCount = 0; 
         startTime = millis();
       } 
-      if ((millis() - startTime) >= 5000 && inByte > 170) {
+      if ((millis() - startTime) >= 3000 && inByte > 170) {
         player_ad.rewind();
         player_ad.pause();
       }
