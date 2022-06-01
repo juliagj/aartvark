@@ -14,16 +14,17 @@ float timeAway = 0;
 int hasLeft = 0;
 float startTime = 0;
 int pause = 0;
+int hasPlayed = 0;
 
  
 void setup()
 {
   // change next line based on your USB port name
-  myPort = new Serial(this, "/dev/cu.usbmodem145101", 9600);
+  myPort = new Serial(this, "/dev/cu.usbmodem14201", 9600);
   minim = new Minim(this);
-  player = minim.loadFile("../ringgold1_music5.mp3");
-  player_ad = minim.loadFile("../Ringgold1_desc.wav"); 
-  player_pr = minim.loadFile("../ringgold_preview.wav"); 
+  player = minim.loadFile("../women1_music34.mp3");
+  player_ad = minim.loadFile("../Women1_desc.mp3"); 
+  player_pr = minim.loadFile("../women1_preview.wav"); 
 }
 
 //I'm doing this in percent, but it may need to be in decibels; if not audible, try multiplying volume by 100
@@ -90,10 +91,12 @@ void draw() {
       }
       if ((hasLeft == 0) && (inByte > 170)){
         hasLeft = 1;
+        hasPlayed = 0;
         adTrigCount = 0; 
         startTime = millis();
       } 
       if ((millis() - startTime) >= 5000 && inByte > 170) {
+        player_ad.rewind();
         player_ad.pause();
       }
     }
@@ -108,14 +111,18 @@ void draw() {
     //play preview if user is btwn 1.2 & 1.4m away
     //playPrev ensures preview can't be re-triggered until person gets over 170cm away and then comes back
     //also, can't play if full description is also playing
-    if ((inByte > 120) && (inByte < 140) && (playPrev == 1) && (!player_ad.isPlaying()) && (pause == 0)){
+    if ((inByte > 110) && (inByte < 150) && (playPrev == 1) && (!player_ad.isPlaying()) && (pause == 0)){
       playPrev = 0;
+      hasPlayed = 1;
       player_pr.play();
     }
     if (inByte < 100) { // If user stands <=1m away from sensor for long enough, play full description 
       hasLeft = 0;
       adTrigCount++;
-      if ((adTrigCount >= 5) && (pause == 0) ){
+      if (hasPlayed == 0){
+        player_pr.play();
+        hasPlayed = 1;
+      } else if ((adTrigCount >= 5) && (pause == 0) && (!player_pr.isPlaying()) && (hasPlayed == 1) ){
         player_ad.setGain(20); 
         player_ad.play(); 
       }
