@@ -1,6 +1,6 @@
-int trigPin = 11;    // Trigger
-int echoPin = 12;    // Echo
-int buttonPin = 9; 
+int trigPin = 3;    // Trigger
+int echoPin = 2;    // Echo
+int buttonPin = 4; 
 long duration, cm, inches;
 
 boolean buttonFlag = false; 
